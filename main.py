@@ -14,6 +14,8 @@ class RecipientWindow(QMainWindow):
     answerfield: QTextBrowser
     textfield: QTextBrowser
     end_box: QMessageBox
+    count_label: QLabel
+    count_of_questions: int
     question: str
     answer: str
 
@@ -21,10 +23,11 @@ class RecipientWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Получатель")
         self.setGeometry(400, 280, 600, 350)
+        self.QA = questions_answers
+        self.count_of_questions = len(self.QA)
         self.configure_labels()
         self.configure_buttons()
         self.configure_layouts()
-        self.QA = questions_answers
         self.shortcut_question = QShortcut(QKeySequence("Ctrl+O"), self)
         self.shortcut_question.activated.connect(self.on_gen)
         self.shortcut_answer = QShortcut(QKeySequence("Ctrl+I"), self)
@@ -40,6 +43,7 @@ class RecipientWindow(QMainWindow):
         self.textfield.setPlainText(self.question)
         if self.answerfield.toPlainText():
             self.answerfield.clear()
+        self.count_label.setText(f"{(self.count_of_questions - len(self.QA)) + 1} / {self.count_of_questions}")
         self.QA.pop(self.question, None)
 
 
@@ -56,6 +60,7 @@ class RecipientWindow(QMainWindow):
         self.textfield = QTextBrowser()
         self.answerfield = QTextBrowser()
         self.end_box = QMessageBox()
+        self.count_label = QLabel(f"{(self.count_of_questions - len(self.QA)) + 1} / {self.count_of_questions}")
         self.end_box.setIcon(QMessageBox.Information)
         self.end_box.setText("Вопросы закончились")
         self.end_box.setWindowTitle("Душераздирающий конец")
@@ -74,6 +79,7 @@ class RecipientWindow(QMainWindow):
         main.addWidget(self.button_show_answer)
         main.addWidget(self.textfield)
         main.addWidget(self.answerfield)
+        main.addWidget(self.count_label)
         widget = QWidget()
         widget.setLayout(main)
         self.setCentralWidget(widget)
